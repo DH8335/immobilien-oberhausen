@@ -1,963 +1,116 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+import React, { useState } from "react";
+
 function App() {
-  const [currentImageIndex, setCurrentImageIndex] = React.useState(0);
-  const [showForm, setShowForm] = React.useState(false);
-  const [formData, setFormData] = React.useState({
-    // Persönliche Daten
-    vorname: '',
-    nachname: '',
-    email: '',
-    telefon: '',
-    geburtsdatum: '',
-    familienstand: '',
-    anzahlKinder: '',
-  
-    // Adresse
-    strasse: '',
-    plz: '',
-    ort: '',
-  
-    // Berufliche Situation
-    beruf: '',
-    arbeitgeber: '',
-    beschaeftigungsverhaeltnis: '',
-    nettoEinkommen: '',
-    befristet: '',
-  
-    // Partner (falls verheiratet/Lebenspartnerschaft)
-    partnerVorname: '',
-    partnerNachname: '',
-    partnerBeruf: '',
-    partnerArbeitgeber: '',
-    partnerNettoEinkommen: '',
-  
-    // Finanzielle Situation
-    eigenkapital: '',
-    monatlicheRate: '',
-    sonstigeVerbindlichkeiten: '',
-    schufa: '',
-  
-    // Kaufabsicht
-    kaufzeitpunkt: '',
-    eigennutzung: '',
-    besichtigungstermin: '',
-  
-    // Finanzierung
-    finanzierungsbestaetigung: '',
-    finanzierungspartner: false,
-  
-    // Datenschutz
-    datenschutz: false,
-    newsletter: false
-  });
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
-  const [currentStep, setCurrentStep] = React.useState(1);
-  const [submitted, setSubmitted] = React.useState(false);
-
-  // Beispielbilder - ersetze diese URLs mit deinen echten Bildern
-  const propertyImages = [
-    "https://placehold.co/800x600/4F46E5/FFFFFF?text=Außenansicht",
-    "https://placehold.co/800x600/059669/FFFFFF?text=Wohnzimmer",
-    "https://placehold.co/800x600/DC2626/FFFFFF?text=Küche",
-    "https://placehold.co/800x600/7C3AED/FFFFFF?text=Schlafzimmer",
-    "https://placehold.co/800x600/EA580C/FFFFFF?text=Badezimmer",
-    "https://placehold.co/800x600/0891B2/FFFFFF?text=Garten"
+  const images = [
+    "/haus1.jpg",
+    "/haus2.jpg",
+    "/haus3.jpg"
   ];
 
-  const nextImage = () => {
-    setCurrentImageIndex((prev) => (prev + 1) % propertyImages.length);
-  };
-
-  const prevImage = () => {
-    setCurrentImageIndex((prev) => (prev - 1 + propertyImages.length) % propertyImages.length);
-  };
-
-  const handleInputChange = (e) => {
-    const { name, value, type, checked } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: type === 'checkbox' ? checked : value
-    }));
-  };
-
-  const nextStep = () => {
-    setCurrentStep(prev => Math.min(prev + 1, 5));
-  };
-
-  const prevStep = () => {
-    setCurrentStep(prev => Math.max(prev - 1, 1));
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    setSubmitted(true);
-  };
-
-  const scrollToForm = () => {
-    setShowForm(true);
-    setTimeout(() => {
-      document.getElementById('interest-form').scrollIntoView({ behavior: 'smooth' });
-    }, 100);
-  };
-
-  if (submitted) {
-    return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
-        <div className="bg-white rounded-lg shadow-lg p-8 max-w-md w-full text-center">
-          <div className="text-green-600 text-6xl mb-4">✓</div>
-          <h2 className="text-2xl font-bold text-gray-800 mb-4">Vielen Dank!</h2>
-          <p className="text-gray-600 mb-6">
-            Ihre Anfrage wurde erfolgreich übermittelt. Wir prüfen Ihre Angaben und melden uns innerhalb von 24 Stunden bei Ihnen.
-          </p>
-          {formData.finanzierungspartner && (
-            <div className="bg-blue-50 p-4 rounded-lg">
-              <p className="text-blue-800 text-sm">
-                Sie werden zusätzlich von unserem Finanzierungspartner kontaktiert, um Ihre Finanzierungsmöglichkeiten zu prüfen.
-              </p>
-            </div>
-          )}
-          <button 
-            onClick={() => {setSubmitted(false); setShowForm(false); setCurrentStep(1);}}
-            className="mt-4 px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
-          >
-            Zurück zur Immobilie
-          </button>
-        </div>
-      </div>
-    );
-  }
-
-  const renderFormStep = () => {
-    switch(currentStep) {
-      case 1:
-        return (
-          <div className="space-y-6">
-            <h3 className="text-xl font-semibold text-gray-800">Persönliche Daten</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Vorname *</label>
-                <input
-                  type="text"
-                  name="vorname"
-                  value={formData.vorname}
-                  onChange={handleInputChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  required
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Nachname *</label>
-                <input
-                  type="text"
-                  name="nachname"
-                  value={formData.nachname}
-                  onChange={handleInputChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  required
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">E-Mail *</label>
-                <input
-                  type="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleInputChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  required
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Telefon *</label>
-                <input
-                  type="tel"
-                  name="telefon"
-                  value={formData.telefon}
-                  onChange={handleInputChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  required
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Geburtsdatum *</label>
-                <input
-                  type="date"
-                  name="geburtsdatum"
-                  value={formData.geburtsdatum}
-                  onChange={handleInputChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  required
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Familienstand *</label>
-                <select
-                  name="familienstand"
-                  value={formData.familienstand}
-                  onChange={handleInputChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  required
-                >
-                  <option value="">Bitte wählen</option>
-                  <option value="ledig">Ledig</option>
-                  <option value="verheiratet">Verheiratet</option>
-                  <option value="geschieden">Geschieden</option>
-                  <option value="verwitwet">Verwitwet</option>
-                  <option value="lebenspartnerschaft">Lebenspartnerschaft</option>
-                </select>
-              </div>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Straße, Hausnr. *</label>
-                <input
-                  type="text"
-                  name="strasse"
-                  value={formData.strasse}
-                  onChange={handleInputChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  required
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">PLZ *</label>
-                <input
-                  type="text"
-                  name="plz"
-                  value={formData.plz}
-                  onChange={handleInputChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  required
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Ort *</label>
-                <input
-                  type="text"
-                  name="ort"
-                  value={formData.ort}
-                  onChange={handleInputChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  required
-                />
-              </div>
-            </div>
-          </div>
-        );
-
-      case 2:
-        return (
-          <div className="space-y-6">
-            <h3 className="text-xl font-semibold text-gray-800">Berufliche Situation</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Beruf *</label>
-                <input
-                  type="text"
-                  name="beruf"
-                  value={formData.beruf}
-                  onChange={handleInputChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  required
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Arbeitgeber *</label>
-                <input
-                  type="text"
-                  name="arbeitgeber"
-                  value={formData.arbeitgeber}
-                  onChange={handleInputChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  required
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Beschäftigungsverhältnis *</label>
-                <select
-                  name="beschaeftigungsverhaeltnis"
-                  value={formData.beschaeftigungsverhaeltnis}
-                  onChange={handleInputChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  required
-                >
-                  <option value="">Bitte wählen</option>
-                  <option value="angestellt">Angestellt</option>
-                  <option value="beamter">Beamter</option>
-                  <option value="selbststaendig">Selbstständig</option>
-                  <option value="freiberufler">Freiberufler</option>
-                  <option value="rentner">Rentner</option>
-                </select>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Netto-Einkommen (monatlich) *</label>
-                <input
-                  type="number"
-                  name="nettoEinkommen"
-                  value={formData.nettoEinkommen}
-                  onChange={handleInputChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="€"
-                  required
-                />
-              </div>
-            </div>
-          
-            {(formData.familienstand === 'verheiratet' || formData.familienstand === 'lebenspartnerschaft') && (
-              <div className="border-t pt-6">
-                <h4 className="text-lg font-medium text-gray-800 mb-4">Partner-Daten</h4>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Partner Vorname</label>
-                    <input
-                      type="text"
-                      name="partnerVorname"
-                      value={formData.partnerVorname}
-                      onChange={handleInputChange}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Partner Nachname</label>
-                    <input
-                      type="text"
-                      name="partnerNachname"
-                      value={formData.partnerNachname}
-                      onChange={handleInputChange}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Partner Beruf</label>
-                    <input
-                      type="text"
-                      name="partnerBeruf"
-                      value={formData.partnerBeruf}
-                      onChange={handleInputChange}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Partner Netto-Einkommen</label>
-                    <input
-                      type="number"
-                      name="partnerNettoEinkommen"
-                      value={formData.partnerNettoEinkommen}
-                      onChange={handleInputChange}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      placeholder="€"
-                    />
-                  </div>
-                </div>
-              </div>
-            )}
-          </div>
-        );
-
-      case 3:
-        return (
-          <div className="space-y-6">
-            <h3 className="text-xl font-semibold text-gray-800">Finanzielle Situation</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Verfügbares Eigenkapital *</label>
-                <input
-                  type="number"
-                  name="eigenkapital"
-                  value={formData.eigenkapital}
-                  onChange={handleInputChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="€"
-                  required
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Gewünschte monatliche Rate *</label>
-                <input
-                  type="number"
-                  name="monatlicheRate"
-                  value={formData.monatlicheRate}
-                  onChange={handleInputChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="€"
-                  required
-                />
-              </div>
-              <div className="md:col-span-2">
-                <label className="block text-sm font-medium text-gray-700 mb-2">Sonstige Verbindlichkeiten (Kredite, etc.)</label>
-                <textarea
-                  name="sonstigeVerbindlichkeiten"
-                  value={formData.sonstigeVerbindlichkeiten}
-                  onChange={handleInputChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  rows="3"
-                  placeholder="Bitte alle bestehenden Kredite und Verbindlichkeiten auflisten"
-                />
-              </div>
-              <div className="md:col-span-2">
-                <label className="block text-sm font-medium text-gray-700 mb-2">SCHUFA-Auskunft *</label>
-                <select
-                  name="schufa"
-                  value={formData.schufa}
-                  onChange={handleInputChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  required
-                >
-                  <option value="">Bitte wählen</option>
-                  <option value="positiv">Positiv (keine negativen Einträge)</option>
-                  <option value="negativ">Negativ (negative Einträge vorhanden)</option>
-                  <option value="unbekannt">Unbekannt</option>
-                </select>
-              </div>
-            </div>
-          </div>
-        );
-
-      case 4:
-        return (
-          <div className="space-y-6">
-            <h3 className="text-xl font-semibold text-gray-800">Kaufabsicht & Finanzierung</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Gewünschter Kaufzeitpunkt *</label>
-                <select
-                  name="kaufzeitpunkt"
-                  value={formData.kaufzeitpunkt}
-                  onChange={handleInputChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  required
-                >
-                  <option value="">Bitte wählen</option>
-                  <option value="sofort">Sofort</option>
-                  <option value="3monate">Innerhalb 3 Monate</option>
-                  <option value="6monate">Innerhalb 6 Monate</option>
-                  <option value="12monate">Innerhalb 12 Monate</option>
-                </select>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Eigennutzung *</label>
-                <select
-                  name="eigennutzung"
-                  value={formData.eigennutzung}
-                  onChange={handleInputChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  required
-                >
-                  <option value="">Bitte wählen</option>
-                  <option value="eigennutzung">Eigennutzung</option>
-                  <option value="kapitalanlage">Kapitalanlage</option>
-                </select>
-              </div>
-            </div>
-
-            <div className="border-t pt-6">
-              <h4 className="text-lg font-medium text-gray-800 mb-4">Finanzierungsbestätigung</h4>
-              <div className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Finanzierungsbestätigung vorhanden? *</label>
-                  <select
-                    name="finanzierungsbestaetigung"
-                    value={formData.finanzierungsbestaetigung}
-                    onChange={handleInputChange}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    required
-                  >
-                    <option value="">Bitte wählen</option>
-                    <option value="ja">Ja, Finanzierungsbestätigung liegt vor</option>
-                    <option value="nein">Nein, noch keine Finanzierungsbestätigung</option>
-                  </select>
-                </div>
-
-                {formData.finanzierungsbestaetigung === 'ja' && (
-                  <div className="bg-green-50 p-4 rounded-lg">
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Finanzierungsbestätigung hochladen</label>
-                    <input
-                      type="file"
-                      accept=".pdf,.jpg,.jpeg,.png"
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
-                    <p className="text-xs text-gray-500 mt-1">Erlaubte Formate: PDF, JPG, PNG (max. 5MB)</p>
-                  </div>
-                )}
-
-                {formData.finanzierungsbestaetigung === 'nein' && (
-                  <div className="bg-blue-50 p-4 rounded-lg">
-                    <div className="flex items-start space-x-3">
-                      <input
-                        type="checkbox"
-                        name="finanzierungspartner"
-                        checked={formData.finanzierungspartner}
-                        onChange={handleInputChange}
-                        className="mt-1"
-                      />
-                      <div>
-                        <label className="text-sm font-medium text-gray-700">
-                          Ja, ich möchte von Ihrem Finanzierungspartner kontaktiert werden
-                        </label>
-                        <p className="text-xs text-gray-600 mt-1">
-                          Unser Partner prüft kostenlos Ihre Finanzierungsmöglichkeiten. Dafür benötigen Sie Gehaltsnachweise und Eigenkapitalnachweis.
-                        </p>
-                      </div>
-                    </div>
-                  
-                    {formData.finanzierungspartner && (
-                      <div className="mt-4 space-y-3">
-                        <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-2">Gehaltsnachweise (letzte 3 Monate)</label>
-                          <input
-                            type="file"
-                            multiple
-                            accept=".pdf,.jpg,.jpeg,.png"
-                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                          />
-                        </div>
-                        <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-2">Eigenkapitalnachweis</label>
-                          <input
-                            type="file"
-                            multiple
-                            accept=".pdf,.jpg,.jpeg,.png"
-                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                          />
-                        </div>
-                        <p className="text-xs text-gray-500">Erlaubte Formate: PDF, JPG, PNG (max. 5MB pro Datei)</p>
-                      </div>
-                    )}
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
-        );
-
-      case 5:
-        return (
-          <div className="space-y-6">
-            <h3 className="text-xl font-semibold text-gray-800">Besichtigung & Datenschutz</h3>
-          
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Gewünschter Besichtigungstermin</label>
-              <select
-                name="besichtigungstermin"
-                value={formData.besichtigungstermin}
-                onChange={handleInputChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              >
-                <option value="">Bitte wählen</option>
-                <option value="werktags">Werktags</option>
-                <option value="wochenende">Wochenende</option>
-                <option value="flexibel">Flexibel</option>
-              </select>
-            </div>
-
-            <div className="border-t pt-6">
-              <h4 className="text-lg font-medium text-gray-800 mb-4">Datenschutz & Einverständniserklärungen</h4>
-              <div className="space-y-4">
-                <div className="flex items-start space-x-3">
-                  <input
-                    type="checkbox"
-                    name="datenschutz"
-                    checked={formData.datenschutz}
-                    onChange={handleInputChange}
-                    className="mt-1"
-                    required
-                  />
-                  <label className="text-sm text-gray-700">
-                    Ich habe die <a href="#" className="text-blue-600 underline">Datenschutzerklärung</a> gelesen und stimme der Verarbeitung meiner Daten zu. *
-                  </label>
-                </div>
-              
-                <div className="flex items-start space-x-3">
-                  <input
-                    type="checkbox"
-                    name="newsletter"
-                    checked={formData.newsletter}
-                    onChange={handleInputChange}
-                    className="mt-1"
-                  />
-                  <label className="text-sm text-gray-700">
-                    Ich möchte über weitere Immobilienangebote per E-Mail informiert werden (optional)
-                  </label>
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-gray-50 p-4 rounded-lg">
-              <h4 className="font-medium text-gray-800 mb-2">Ihre Angaben im Überblick:</h4>
-              <div className="text-sm text-gray-600 space-y-1">
-                <p><strong>Name:</strong> {formData.vorname} {formData.nachname}</p>
-                <p><strong>E-Mail:</strong> {formData.email}</p>
-                <p><strong>Eigenkapital:</strong> {formData.eigenkapital ? `${formData.eigenkapital}€` : 'Nicht angegeben'}</p>
-                <p><strong>Monatliche Rate:</strong> {formData.monatlicheRate ? `${formData.monatlicheRate}€` : 'Nicht angegeben'}</p>
-                <p><strong>Finanzierung:</strong> {formData.finanzierungsbestaetigung === 'ja' ? 'Bestätigung vorhanden' : 'Noch keine Bestätigung'}</p>
-              </div>
-            </div>
-          </div>
-        );
-
-      default:
-        return null;
-    }
-  };
-
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <header className="bg-white shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 py-4">
-          <div className="flex justify-between items-center">
-            <h1 className="text-2xl font-bold text-gray-900">Traumhaus zu verkaufen</h1>
-            <button
-              onClick={scrollToForm}
-              className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors"
-            >
-              Interesse bekunden
-            </button>
-          </div>
-        </div>
+    <div className="font-sans bg-gray-50 text-gray-800">
+      {/* ✅ Header */}
+      <header className="bg-blue-600 text-white p-6 shadow-md">
+        <h1 className="text-3xl font-bold">Immobilien Oberhausen</h1>
+        <p className="text-sm">Ihr Partner für Verkauf & Vermietung</p>
       </header>
 
-      {/* Hero Section mit Bildergalerie */}
-      <section className="bg-white">
-        <div className="max-w-7xl mx-auto px-4 py-8">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            {/* Bildergalerie */}
-            <div className="space-y-4">
-              <div className="relative">
-                <img
-                  src={propertyImages[currentImageIndex]}
-                  alt={`Immobilie Bild ${currentImageIndex + 1}`}
-                  className="w-full h-96 object-cover rounded-lg shadow-lg"
-                />
-                <button
-                  onClick={prevImage}
-                  className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-50 text-white p-2 rounded-full hover:bg-opacity-70"
-                >
-                  ←
-                </button>
-                <button
-                  onClick={nextImage}
-                  className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-50 text-white p-2 rounded-full hover:bg-opacity-70"
-                >
-                  →
-                </button>
-                <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-black bg-opacity-50 text-white px-3 py-1 rounded-full text-sm">
-                  {currentImageIndex + 1} / {propertyImages.length}
-                </div>
-              </div>
-            
-              {/* Thumbnail Navigation */}
-              <div className="flex space-x-2 overflow-x-auto">
-                {propertyImages.map((image, index) => (
-                  <button
-                    key={index}
-                    onClick={() => setCurrentImageIndex(index)}
-                    className={`flex-shrink-0 w-20 h-16 rounded-md overflow-hidden border-2 ${
-                      index === currentImageIndex ? 'border-blue-500' : 'border-gray-300'
-                    }`}
-                  >
-                    <img
-                      src={image}
-                      alt={`Thumbnail ${index + 1}`}
-                      className="w-full h-full object-cover"
-                    />
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* Immobilien-Info */}
-            <div className="space-y-6">
-              <div>
-                <h2 className="text-3xl font-bold text-gray-900 mb-2">Einfamilienhaus in Mülheim</h2>
-                <p className="text-xl text-blue-600 font-semibold">€ 450.000</p>
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div className="bg-gray-50 p-4 rounded-lg">
-                  <div className="text-2xl font-bold text-gray-900">150</div>
-                  <div className="text-sm text-gray-600">m² Wohnfläche</div>
-                </div>
-                <div className="bg-gray-50 p-4 rounded-lg">
-                  <div className="text-2xl font-bold text-gray-900">5</div>
-                  <div className="text-sm text-gray-600">Zimmer</div>
-                </div>
-                <div className="bg-gray-50 p-4 rounded-lg">
-                  <div className="text-2xl font-bold text-gray-900">400</div>
-                  <div className="text-sm text-gray-600">m² Grundstück</div>
-                </div>
-                <div className="bg-gray-50 p-4 rounded-lg">
-                  <div className="text-2xl font-bold text-gray-900">1995</div>
-                  <div className="text-sm text-gray-600">Baujahr</div>
-                </div>
-              </div>
-
-              <div className="space-y-4">
-                <h3 className="text-lg font-semibold text-gray-900">Ausstattung</h3>
-                <div className="grid grid-cols-2 gap-2 text-sm">
-                  <div className="flex items-center space-x-2">
-                    <span className="text-green-600">✓</span>
-                    <span>Einbauküche</span>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <span className="text-green-600">✓</span>
-                    <span>Garten</span>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <span className="text-green-600">✓</span>
-                    <span>Garage</span>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <span className="text-green-600">✓</span>
-                    <span>Keller</span>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <span className="text-green-600">✓</span>
-                    <span>Balkon</span>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <span className="text-green-600">✓</span>
-                    <span>Fußbodenheizung</span>
-                  </div>
-                </div>
-              </div>
-
+      <main className="max-w-5xl mx-auto p-6 space-y-12">
+        {/* ✅ Galerie */}
+        <section>
+          <h2 className="text-2xl font-semibold mb-4">Unsere Objekte</h2>
+          <div className="relative">
+            <img
+              src={images[currentImageIndex]}
+              alt="Immobilie"
+              className="rounded-md shadow-lg w-full h-96 object-cover"
+            />
+            <div className="flex justify-between mt-4">
               <button
-                onClick={scrollToForm}
-                className="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition-colors font-semibold"
+                onClick={() =>
+                  setCurrentImageIndex(
+                    (currentImageIndex - 1 + images.length) % images.length
+                  )
+                }
+                className="bg-gray-200 px-4 py-2 rounded hover:bg-gray-300"
               >
-                Jetzt Interesse bekunden
+                ◀
+              </button>
+              <button
+                onClick={() =>
+                  setCurrentImageIndex((currentImageIndex + 1) % images.length)
+                }
+                className="bg-gray-200 px-4 py-2 rounded hover:bg-gray-300"
+              >
+                ▶
               </button>
             </div>
           </div>
-        </div>
-      </section>
-
-      {/* Exposé Section */}
-      <section className="bg-gray-50 py-12">
-        <div className="max-w-4xl mx-auto px-4">
-          <h2 className="text-2xl font-bold text-gray-900 mb-8 text-center">Detaillierte Objektbeschreibung</h2>
-        
-          <div className="bg-white rounded-lg shadow-lg p-8 space-y-6">
-            <div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-4">Lage</h3>
-              <p className="text-gray-700 leading-relaxed">
-                Das Einfamilienhaus befindet sich in einer ruhigen Wohnstraße in Mülheim an der Ruhr. 
-                Die Lage bietet eine perfekte Kombination aus städtischer Infrastruktur und grüner Umgebung. 
-                Schulen, Kindergärten und Einkaufsmöglichkeiten sind fußläufig erreichbar. 
-                Die Anbindung an öffentliche Verkehrsmittel ist hervorragend.
-              </p>
-            </div>
-
-            <div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-4">Objektbeschreibung</h3>
-              <p className="text-gray-700 leading-relaxed">
-                Dieses gepflegte Einfamilienhaus aus dem Jahr 1995 überzeugt durch seine durchdachte Raumaufteilung 
-                und hochwertige Ausstattung. Auf 150 m² Wohnfläche verteilen sich 5 Zimmer, die viel Platz für 
-                die ganze Familie bieten. Das Haus wurde kontinuierlich modernisiert und befindet sich in einem 
-                ausgezeichneten Zustand.
-              </p>
-            </div>
-
-            <div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-4">Raumaufteilung</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <h4 className="font-semibold text-gray-800 mb-2">Erdgeschoss</h4>
-                  <ul className="text-gray-700 space-y-1">
-                    <li>• Eingangsbereich mit Garderobe</li>
-                    <li>• Großzügiges Wohnzimmer (25 m²)</li>
-                    <li>• Moderne Einbauküche (12 m²)</li>
-                    <li>• Gäste-WC</li>
-                    <li>• Zugang zur Terrasse</li>
-                  </ul>
-                </div>
-                <div>
-                  <h4 className="font-semibold text-gray-800 mb-2">Obergeschoss</h4>
-                  <ul className="text-gray-700 space-y-1">
-                    <li>• Masterschlafzimmer (20 m²)</li>
-                    <li>• 2 weitere Schlafzimmer (je 15 m²)</li>
-                    <li>• Arbeitszimmer (10 m²)</li>
-                    <li>• Vollbad mit Wanne und Dusche</li>
-                    <li>• Balkon</li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-
-            <div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-4">Energieausweis</h3>
-              <div className="bg-gray-50 p-4 rounded-lg">
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
-                  <div>
-                    <span className="font-semibold">Energieeffizienzklasse:</span>
-                    <div className="text-lg font-bold text-green-600">C</div>
-                  </div>
-                  <div>
-                    <span className="font-semibold">Energieverbrauch:</span>
-                    <div className="text-lg font-bold">95 kWh/m²a</div>
-                  </div>
-                  <div>
-                    <span className="font-semibold">Heizungsart:</span>
-                    <div>Gas-Brennwert</div>
-                  </div>
-                  <div>
-                    <span className="font-semibold">Baujahr Heizung:</span>
-                    <div>2018</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div className="text-center">
-              <a 
-                href="#" 
-                className="inline-flex items-center px-6 py-3 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors"
-              >
-                📄 Vollständiges Exposé herunterladen (PDF)
-              </a>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Interesse Form */}
-      {showForm && (
-        <section id="interest-form" className="bg-white py-12">
-          <div className="max-w-4xl mx-auto px-4">
-            <div className="bg-white rounded-lg shadow-lg overflow-hidden">
-              {/* Header */}
-              <div className="bg-blue-600 text-white p-6">
-                <h2 className="text-2xl font-bold">Interesse bekunden</h2>
-                <p className="mt-2 opacity-90">Bitte füllen Sie alle Felder aus, damit wir Ihnen ein passendes Angebot unterbreiten können.</p>
-              </div>
-
-              {/* Progress Bar */}
-              <div className="bg-gray-200 h-2">
-                <div 
-                  className="bg-blue-600 h-2 transition-all duration-300"
-                  style={{ width: `${(currentStep / 5) * 100}%` }}
-                ></div>
-              </div>
-
-              <form onSubmit={handleSubmit} className="p-6">
-                {/* Step Indicator */}
-                <div className="flex justify-between items-center mb-8">
-                  {[1, 2, 3, 4, 5].map((step) => (
-                    <div key={step} className="flex items-center">
-                      <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
-                        step <= currentStep ? 'bg-blue-600 text-white' : 'bg-gray-300 text-gray-600'
-                      }`}>
-                        {step}
-                      </div>
-                      <div className="ml-2 text-xs text-gray-600 hidden md:block">
-                        {step === 1 && 'Persönlich'}
-                        {step === 2 && 'Beruflich'}
-                        {step === 3 && 'Finanzen'}
-                        {step === 4 && 'Finanzierung'}
-                        {step === 5 && 'Abschluss'}
-                      </div>
-                      {step < 5 && <div className="w-8 h-0.5 bg-gray-300 mx-2 hidden md:block"></div>}
-                    </div>
-                  ))}
-                </div>
-
-                {/* Form Content */}
-                {renderFormStep()}
-
-                {/* Navigation Buttons */}
-                <div className="flex justify-between mt-8 pt-6 border-t">
-                  <button
-                    type="button"
-                    onClick={prevStep}
-                    disabled={currentStep === 1}
-                    className={`px-6 py-2 rounded-md font-medium ${
-                      currentStep === 1 
-                        ? 'bg-gray-300 text-gray-500 cursor-not-allowed' 
-                        : 'bg-gray-600 text-white hover:bg-gray-700'
-                    }`}
-                  >
-                    Zurück
-                  </button>
-                
-                  {currentStep < 5 ? (
-                    <button
-                      type="button"
-                      onClick={nextStep}
-                      className="px-6 py-2 bg-blue-600 text-white rounded-md font-medium hover:bg-blue-700"
-                    >
-                      Weiter
-                    </button>
-                  ) : (
-                    <button
-                      type="submit"
-                      disabled={!formData.datenschutz}
-                      className={`px-6 py-2 rounded-md font-medium ${
-                        formData.datenschutz
-                          ? 'bg-green-600 text-white hover:bg-green-700'
-                          : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                      }`}
-                    >
-                      Anfrage absenden
-                    </button>
-                  )}
-                </div>
-              </form>
-            </div>
-
-            {/* Info Box */}
-            <div className="mt-6 bg-blue-50 border border-blue-200 rounded-lg p-4">
-              <div className="flex items-start space-x-3">
-                <div className="text-blue-600 text-xl">ℹ️</div>
-                <div>
-                  <h3 className="font-medium text-blue-800">Warum diese Angaben?</h3>
-                  <p className="text-sm text-blue-700 mt-1">
-                    Diese Informationen helfen uns dabei, nur qualifizierte Interessenten zu kontaktieren und Ihnen passende Finanzierungslösungen anzubieten. Alle Daten werden vertraulich behandelt.
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
         </section>
-      )}
 
-      {/* Footer */}
-      <footer className="bg-gray-800 text-white py-8">
-        <div className="max-w-7xl mx-auto px-4">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div>
-              <h3 className="text-lg font-semibold mb-4">Kontakt</h3>
-              <div className="space-y-2 text-gray-300">
-                <p>Max Mustermann</p>
-                <p>📞 +49 123 456 789</p>
-                <p>✉️ max@mustermann.de</p>
-                <p>📍 Mülheim an der Ruhr</p>
-              </div>
-            </div>
-            <div>
-              <h3 className="text-lg font-semibold mb-4">Besichtigungen</h3>
-              <div className="space-y-2 text-gray-300">
-                <p>Montag - Freitag: 14:00 - 18:00</p>
-                <p>Samstag: 10:00 - 16:00</p>
-                <p>Sonntag: Nach Vereinbarung</p>
-              </div>
-            </div>
-            <div>
-              <h3 className="text-lg font-semibold mb-4">Rechtliches</h3>
-              <div className="space-y-2">
-                <a href="#" className="text-gray-300 hover:text-white">Impressum</a><br/>
-                <a href="#" className="text-gray-300 hover:text-white">Datenschutz</a><br/>
-                <a href="#" className="text-gray-300 hover:text-white">AGB</a>
-              </div>
-            </div>
-          </div>
-          <div className="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400">
-            <p>© 2024 Immobilienverkauf Max Mustermann. Alle Rechte vorbehalten.</p>
-          </div>
-        </div>
+        {/* ✅ Kontaktformular */}
+        <section id="kontakt">
+          <h2 className="text-2xl font-semibold mb-4">Kontakt aufnehmen</h2>
+
+          <form
+            name="kontakt"
+            method="POST"
+            data-netlify="true"
+            className="space-y-4 bg-white p-6 rounded-md shadow-md"
+          >
+            {/* Netlify hidden input */}
+            <input type="hidden" name="form-name" value="kontakt" />
+
+            <input
+              type="text"
+              name="vorname"
+              placeholder="Vorname"
+              className="w-full border border-gray-300 p-2 rounded"
+              required
+            />
+            <input
+              type="text"
+              name="nachname"
+              placeholder="Nachname"
+              className="w-full border border-gray-300 p-2 rounded"
+              required
+            />
+            <input
+              type="email"
+              name="email"
+              placeholder="E-Mail"
+              className="w-full border border-gray-300 p-2 rounded"
+              required
+            />
+            <textarea
+              name="nachricht"
+              placeholder="Deine Nachricht..."
+              className="w-full border border-gray-300 p-2 rounded"
+              rows="4"
+              required
+            ></textarea>
+
+            <button
+              type="submit"
+              className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+            >
+              Absenden
+            </button>
+          </form>
+        </section>
+      </main>
+
+      {/* ✅ Footer */}
+      <footer className="bg-gray-800 text-white text-center p-4 mt-12">
+        <p>© 2024 Immobilien Oberhausen – Alle Rechte vorbehalten</p>
       </footer>
     </div>
   );
 }
+
+export default App;
